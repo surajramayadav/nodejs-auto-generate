@@ -1,0 +1,7 @@
+    dataValues: {
+      id: 3,
+      name: 'admin',
+      createdAt: 2021-02-10T09:41:14.000Z,
+      updatedAt: 2021-02-10T09:41:14.000Z,
+      user_roles: [user_roles]
+    },

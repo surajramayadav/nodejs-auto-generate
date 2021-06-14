@@ -1,0 +1,17 @@
+npm install react-router react-router-dom react-redux redux redux-persist  axios lodash  @material-ui/styles  @material-ui/pickers moment recompose  history clsx @fortawesome/fontawesome-svg-core @fortawesome/free-brands-svg-icons @fortawesome/free-solid-svg-icons  capitalize
+
+npm install @date-io/moment@1.x moment @material-ui/pickers
+npm install material-table --save
+
+
+
+
+NODE
+#npm install express mysql body-parser -save
+#npm install nodemon -save
+
+npm install express sequelize mysql2 body-parser cors --save
+
+
+npm install express sequelize mysql2 body-parser cors jsonwebtoken bcryptjs --save
+

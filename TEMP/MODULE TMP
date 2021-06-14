@@ -1,0 +1,262 @@
+const fs = require('fs');
+const chalk = require('chalk');
+const moduleName = 'Admin';
+const moduleNameLC = moduleName.toLowerCase();
+
+const createDir = (dirPath, msg = 'Success') => {
+  console.log(chalk.yellow('Creating : ' + dirPath));
+  fs.mkdirSync(dirPath, {recursive: true}, (error) => {
+    console.log(error);
+    if (error) {
+      console.error('An Error Occured :\n');
+      console.error(error);
+    } else {
+      console.log(chalk.greenBright(msg));
+    }
+  });
+};
+const createFile = (filePath, fileContent, msg = 'Success') => {
+  fs.writeFile(filePath, fileContent, {recursive: true}, (error) => {
+    if (error) {
+      console.error('An Error Occured :\n');
+      console.error(error);
+    } else {
+      console.log(chalk.greenBright(msg));
+    }
+  });
+};
+
+const basePath = __dirname + '/' + moduleName + '/';
+const modelPath = basePath + 'Model';
+const routesPath = basePath + 'Routes';
+const controllerPath = basePath + 'Controller';
+
+const modelFile = modelPath + '/' + moduleName + '.model.js';
+const routesFile = routesPath + '/' + moduleName + '.routes.js';
+const controllerFile = controllerPath + '/' + moduleName + '.controller.js';
+
+const routes = `const {authJWT} = require('../../../../server/Middleware');
+const ${moduleName} = require('../Controller/${moduleName}.controller');
+const Modules = require('../index');
+
+module.exports = function (app) {
+  app.use(function (req, res, next) {
+    res.header(
+      'Access-Control-Allow-Headers',
+      'x-access-token, Authorization, Origin, Content-Type, Accept',
+    );
+    next();
+  });
+  var router = require('express').Router();
+
+  // Create a new Tutorial
+  router.post('/', [authJWT.isAdmin], ${moduleName}.create);
+
+  // Retrieve a single Tutorial with id
+  router.get('/:id', ${moduleName}.findOne);
+
+  // Retrieve all Tutorials
+  router.get('/', ${moduleName}.findAll);
+
+  // Update a Tutorial with id
+  router.put('/:id', ${moduleName}.update);
+
+  // Delete a Tutorial with id
+  router.delete('/:id', [authJWT.isAdmin], ${moduleName}.delete);
+
+  // Create a new Tutorial
+  router.delete('/', [authJWT.isAdmin], ${moduleName}.deleteAll);
+
+  // Retrieve all published Tutorials
+  // router.get('/published', ${moduleName}.findAllPublished);
+
+  app.use(
+    '/api/' + Modules.apiRoute,
+    // [authJWT.verifyToken],
+    router,
+  );
+  return app;
+};`;
+
+const controller = `const bcrypt = require('bcryptjs');
+const db = require('../../../../server/Models');
+const ${moduleName} = db.user;
+const Op = db.Sequelize.Op;
+
+// Create and Save a new ${moduleName}
+exports.create = (req, res) => {
+  // Validate request
+  if (!req.body.username) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    });
+    return;
+  }
+
+  // Create a ${moduleName}
+  const user = {
+    username: req.body.username,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 8),
+  };
+
+  // Save ${moduleName} in the database
+  ${moduleName}.create(user)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while creating the ${moduleName}.',
+      });
+    });
+};
+
+// Retrieve all ${moduleName}s from the database.
+exports.findAll = (req, res) => {
+  const username = req.query.username;
+  var condition = username ? {username: {[Op.like]: \`\%\$\{username\}\%\`}} : null;
+
+  ${moduleName}.findAll({where: condition})
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving users.',
+      });
+    });
+};
+
+// Find a single ${moduleName} with an id
+exports.findOne = (req, res) => {
+  const id = req.params.id;
+
+  ${moduleName}.findByPk(id)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: 'Error retrieving ${moduleName} with id=' + id,
+      });
+    });
+};
+
+// Update a ${moduleName} by the id in the request
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  ${moduleName}.update(req.body, {
+    where: {id: id},
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: '${moduleName} was updated successfully.',
+        });
+      } else {
+        res.send({
+          message: \`Cannot update ${moduleName} with id=\$\{id\}. Maybe ${moduleName} was not found or req.body is empty!\`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: 'Error updating ${moduleName} with id=' + id,
+      });
+    });
+};
+
+// Delete a ${moduleName} with the specified id in the request
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  ${moduleName}.destroy({
+    where: {id: id},
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: '${moduleName} was deleted successfully!',
+        });
+      } else {
+        res.send({
+          message: \`Cannot delete ${moduleName} with id=\$\{id\}. Maybe ${moduleName} was not found!\`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: 'Could not delete ${moduleName} with id=' + id,
+      });
+    });
+};
+
+// Delete all ${moduleName}s from the database.
+exports.deleteAll = (req, res) => {
+  ${moduleName}.destroy({
+    where: {},
+    truncate: false,
+  })
+    .then((nums) => {
+      res.send({message: \`\$\{nums\} ${moduleName}s were deleted successfully!\`});
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while removing all users.',
+      });
+    });
+};
+
+// // Find all published ${moduleName}s
+// exports.findAllPublished = (req, res) => {
+//   ${moduleName}.findAll({where: {published: true}})
+//     .then((data) => {
+//       res.send(data);
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message:
+//           err.message || 'Some error occurred while retrieving users.',
+//       });
+//     });
+// };
+`;
+
+console.log(chalk.bgWhite(chalk.black('Creating Module : ' + moduleName)));
+createDir(basePath);
+console.log(
+  chalk.red(
+    '----------------------------------------------------------------------------- \n',
+  ),
+);
+createDir(modelPath);
+if (fs.existsSync(modelPath)) {
+  createFile(modelFile, '', moduleName + ' Model created !!!');
+}
+
+createDir(routesPath);
+if (fs.existsSync(routesPath)) {
+  createFile(routesFile, routes, moduleName + ' Routes created !!!');
+}
+
+createDir(controllerPath);
+if (fs.existsSync(controllerPath)) {
+  createFile(controllerFile, '', moduleName + ' Controller created !!!');
+}
+setTimeout(() => {
+  if (
+    fs.existsSync(modelFile) &&
+    fs.existsSync(routesFile) &&
+    fs.existsSync(controllerFile)
+  ) {
+    console.log(
+      chalk.bgGreenBright('Successfully Created Module ' + moduleName),
+    );
+  } else {
+    console.log(
+      chalk.bgRedBright(chalk.white('Error Creating Module ' + moduleName)),
+    );
+  }
+}, 300);

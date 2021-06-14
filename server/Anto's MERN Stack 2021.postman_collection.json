@@ -1,0 +1,229 @@
+{
+	"info": {
+		"_postman_id": "a17fc5b4-1625-45f5-9b30-e8ca40c88d7e",
+		"name": "Anto's MERN Stack 2021",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Routes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/getRoutes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getRoutes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Routes Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/getRoutes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getRoutes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signup - FormData",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "anto",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "me@ianto.in",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						},
+						{
+							"key": "roles[]",
+							"value": "admin",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					]
+				},
+				"description": "- role is for single role in both formdata and json modes\n- roles[] for multiple roles in formdata\n- roles : [\"admin\"] for multiple role in json"
+			},
+			"response": [
+				{
+					"name": "Signup",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "anto",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "me@ianto.in",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "roles[]",
+									"value": "admin",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:8081"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "447"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1bf-3Ll0WlU9DLnPhPRll7Kev9hmDs8\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 10 Feb 2021 05:26:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"user\": {\n        \"id\": 2,\n        \"username\": \"anto\",\n        \"email\": \"me@ianto.in\",\n        \"password\": \"$2a$08$qnYN94QJIhFzfQIHaV.yqeB3E3017tAKoyySLqm4UVU3rsuuKuBS.\",\n        \"updatedAt\": \"2021-02-10T05:26:26.775Z\",\n        \"createdAt\": \"2021-02-10T05:26:26.775Z\"\n    },\n    \"roles\": [\n        \"ROLE_ADMIN\"\n    ],\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjEyOTM0Nzg2LCJleHAiOjE2MTMwMjExODZ9.MVP3_TOFrpqlragXatrozG15c7-ORqwoxl0AOgTGlaU\",\n    \"message\": \"User was registered successfully!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Signup - JSON",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"email\": \"info@exits.in\",\n    \"password\": \"123456\",\n    \"role\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8081"
+		}
+	]
+}
